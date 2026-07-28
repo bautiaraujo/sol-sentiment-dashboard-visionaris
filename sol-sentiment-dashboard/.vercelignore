@@ -1,0 +1,6 @@
+# El build de Vercel sólo necesita el front-end.
+pipeline/
+data/
+docs/
+*.md
+!README.md

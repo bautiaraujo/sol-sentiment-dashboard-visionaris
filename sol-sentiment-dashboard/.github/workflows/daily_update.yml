@@ -1,0 +1,63 @@
+name: Daily Pipeline Update
+
+on:
+  schedule:
+    - cron: "0 6 * * *"   # 06:00 UTC = 03:00 Buenos Aires
+  workflow_dispatch:       # permite dispararlo a mano desde la pestaña Actions
+
+# Evita que dos corridas se pisen si una tarda más de lo normal.
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Fetch Solana prices (Yahoo Finance)
+        run: python pipeline/get_prices.py
+
+      - name: Fetch Reddit posts
+        env:
+          REDDIT_CLIENT_ID:     ${{ secrets.REDDIT_CLIENT_ID }}
+          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
+          REDDIT_USER_AGENT:    ${{ secrets.REDDIT_USER_AGENT }}
+        run: python pipeline/get_reddit_extended.py
+
+      - name: Fetch Fear & Greed Index
+        run: python pipeline/get_fear_greed.py
+
+      - name: Run sentiment analysis (RoBERTa)
+        run: python pipeline/sentiment.py
+
+      - name: Train models and export dashboard data
+        run: python pipeline/export_for_dashboard.py
+
+      - name: Commit and push updated data
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/ public/data/dashboard_data.json
+          if git diff --staged --quiet; then
+            echo "Sin cambios en los datos: no hay nada que commitear."
+          else
+            git commit -m "chore: daily update $(date -u +'%Y-%m-%d')"
+            git push
+          fi

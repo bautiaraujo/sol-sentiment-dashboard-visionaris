@@ -1,0 +1,180 @@
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ────────────────────────────────────────────────────────────── */
+/*  TOKENS DE TEMA                                               */
+/*  Los valores literales viven también en ThemeProvider.tsx,    */
+/*  porque ECharts dibuja en canvas y no resuelve var().         */
+/* ────────────────────────────────────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  --font-raleway: "Raleway", sans-serif;
+  --font-fira: "Fira Code", monospace;
+
+  --c-bg:       #060D1F;
+  --c-card:     #0C1830;
+  --c-border:   #1E3A5F;
+  --c-soft:     #111F38;
+  --c-primary:  #4F80FF;
+  --c-positive: #10CFAA;
+  --c-negative: #FF4D6A;
+  --c-baseline: #F5A623;
+  --c-muted:    #6B89B0;
+  --c-heading:  #E8F4FF;
+  --c-body:     #9BB5D5;
+  --c-reddit:   #FF6B35;
+  --c-fg:       #10CFAA;
+  --c-forecast: #9B6BFF;
+
+  --rgb-primary:  79,128,255;
+  --rgb-positive: 16,207,170;
+  --rgb-negative: 255,77,106;
+  --rgb-muted:    107,137,176;
+  --rgb-reddit:   255,107,53;
+  --rgb-fg:       16,207,170;
+  --rgb-forecast: 155,107,255;
+  --rgb-panel:    30,58,95;
+
+  --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --row-hover:   #0F2040;
+  --scroll-thumb:#1E3A5F;
+}
+
+[data-theme="light"] {
+  --c-bg:       #F1F5FA;
+  --c-card:     #FFFFFF;
+  --c-border:   #D5E1F0;
+  --c-soft:     #E6EDF6;
+  --c-primary:  #2E5FE8;
+  --c-positive: #00907A;
+  --c-negative: #D62445;
+  --c-baseline: #C87A00;
+  --c-muted:    #7089A8;
+  --c-heading:  #08172E;
+  --c-body:     #3B587A;
+  --c-reddit:   #DB4A11;
+  --c-fg:       #00907A;
+  --c-forecast: #7141D8;
+
+  --rgb-primary:  46,95,232;
+  --rgb-positive: 0,144,122;
+  --rgb-negative: 214,36,69;
+  --rgb-muted:    112,137,168;
+  --rgb-reddit:   219,74,17;
+  --rgb-fg:       0,144,122;
+  --rgb-forecast: 113,65,216;
+  --rgb-panel:    213,225,240;
+
+  --card-shadow: 0 2px 12px rgba(15,40,80,0.08);
+  --row-hover:   #EEF4FC;
+  --scroll-thumb:#C6D6E8;
+}
+
+* { box-sizing: border-box; }
+
+html { color-scheme: dark; }
+[data-theme="light"] { color-scheme: light; }
+
+body {
+  background-color: var(--c-bg);
+  color: var(--c-body);
+  font-family: var(--font-raleway);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: var(--c-bg); }
+::-webkit-scrollbar-thumb  { background: var(--scroll-thumb); border-radius: 3px; }
+
+.glass-card {
+  background: var(--c-card);
+  border: 1px solid var(--c-border);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.inner-panel  { background: rgba(var(--rgb-panel), 0.30); }
+.row-hover:hover { background: var(--row-hover); }
+
+/* Fondos tenues reutilizables para chips y badges */
+.tint-primary  { background: rgba(var(--rgb-primary),  0.12); }
+.tint-positive { background: rgba(var(--rgb-positive), 0.12); }
+.tint-negative { background: rgba(var(--rgb-negative), 0.12); }
+.tint-muted    { background: rgba(var(--rgb-muted),    0.15); }
+.tint-reddit   { background: rgba(var(--rgb-reddit),   0.12); }
+.tint-fg       { background: rgba(var(--rgb-fg),       0.12); }
+.tint-forecast { background: rgba(var(--rgb-forecast), 0.10); }
+
+/* ── Toggle de tema ── */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px 2px 2px;
+  border: 1px solid var(--c-border);
+  border-radius: 999px;
+  background: var(--c-card);
+  color: var(--c-muted);
+  font-family: var(--font-fira);
+  font-size: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.theme-toggle:hover  { border-color: var(--c-primary); color: var(--c-heading); }
+.theme-toggle:focus-visible { outline: 2px solid var(--c-primary); outline-offset: 2px; }
+
+.theme-toggle-track {
+  position: relative;
+  width: 30px; height: 16px;
+  border-radius: 999px;
+  background: rgba(var(--rgb-primary), 0.18);
+  display: inline-block;
+  flex: none;
+}
+.theme-toggle-thumb {
+  position: absolute;
+  top: 1px; left: 1px;
+  width: 14px; height: 14px;
+  border-radius: 999px;
+  background: var(--c-primary);
+  color: var(--c-card);
+  font-size: 9px;
+  line-height: 14px;
+  text-align: center;
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-theme="light"] .theme-toggle-thumb { transform: translateX(14px); }
+.theme-toggle-label { letter-spacing: 0.08em; text-transform: uppercase; }
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 rgba(var(--rgb-primary), 0); }
+  50%      { box-shadow: 0 0 20px rgba(var(--rgb-primary), 0.2); }
+}
+.glow-on-hover:hover { animation: glow-pulse 1.5s ease-in-out infinite; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in    { animation: fadeInUp 0.5s ease both; }
+.fade-in-1  { animation-delay: 0.05s; }
+.fade-in-2  { animation-delay: 0.10s; }
+.fade-in-3  { animation-delay: 0.15s; }
+.fade-in-4  { animation-delay: 0.20s; }
+.fade-in-5  { animation-delay: 0.25s; }
+.fade-in-6  { animation-delay: 0.30s; }
+.fade-in-7  { animation-delay: 0.35s; }
+.fade-in-8  { animation-delay: 0.40s; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

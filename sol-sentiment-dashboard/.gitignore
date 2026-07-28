@@ -1,0 +1,26 @@
+# Node / Next
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Entorno
+.env
+.env.local
+.env*.local
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.egg-info/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
