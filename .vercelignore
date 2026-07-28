@@ -1,6 +1,6 @@
 # El build de Vercel sólo necesita el front-end.
-pipeline/
-data/
-docs/
-*.md
-!README.md
+# Las barras iniciales anclan los patrones a la raíz: sin ellas,
+# "data/" también excluiría public/data/, que sí hace falta.
+/pipeline/
+/data/
+/docs/
